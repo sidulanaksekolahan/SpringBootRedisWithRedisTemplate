@@ -24,15 +24,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    /**
+     * @CachePut is used to update data in the cache when there is any update in the source database.
+     */
     @Override
-    @CachePut(value = "users", key = "#result.id")
+    @CachePut(value = "employees", key = "#result.id")
     public Employee saveEmployee(EmployeeDto employeeDto) {
         Employee user = new Employee(employeeDto.getFirstName(), employeeDto.getLastName(), employeeDto.getEmail());
         return employeeRepository.save(user);
     }
 
+    /**
+     * @Cacheable is employed to fetch data from the database, storing it in the cache. Upon future invocations,
+     * the method retrieves the cached value directly, eliminating the need to execute the method again.
+     */
     @Override
-    @Cacheable(value = "users", key = "#id")
+    @Cacheable(value = "employees", key = "#id")
     public Employee getEmployeeById(Integer id) {
         Optional<Employee> employee = employeeRepository.findById(id);
 
@@ -49,8 +56,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
 
+    /**
+     * @CacheEvict is used for removing stale or unused data from the cache.
+     */
     @Override
-    @CacheEvict(value = "users", key = "#id")
+    @CacheEvict(value = "employees", key = "#id")
     public void deleteEmployeeById(Integer id) {
         Employee user = getEmployeeById(id);
         if (user != null) {
@@ -60,8 +70,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    /**
+     * @CachePut is used to update data in the cache when there is any update in the source database.
+     */
     @Override
-    @CachePut(value = "users", key = "#id")
+    @CachePut(value = "employees", key = "#id")
     public Employee updateEmployee(Integer id, EmployeeDto employeeDto) {
         Employee employee = getEmployeeById(id);
         if (employee == null) {
