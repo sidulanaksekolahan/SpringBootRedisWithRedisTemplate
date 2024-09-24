@@ -62,16 +62,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @CachePut(value = "users", key = "#id")
-    public Employee updateEmployee(Integer id, EmployeeDto userDto) {
+    public Employee updateEmployee(Integer id, EmployeeDto employeeDto) {
         Employee employee = getEmployeeById(id);
         if (employee == null) {
             throw new EmployeeNotFoundExc("employee with id: " + id + " not found!");
         }
 
         // update the data
-        employee.setFirstName(employee.getFirstName());
-        employee.setLastName(employee.getLastName());
-        employee.setEmail(employee.getEmail());
+        employee.setFirstName(employeeDto.getFirstName());
+        employee.setLastName(employeeDto.getLastName());
+        employee.setEmail(employeeDto.getEmail());
 
         // save and return the user
         return employeeRepository.save(employee);
