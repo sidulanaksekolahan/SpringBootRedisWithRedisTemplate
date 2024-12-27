@@ -26,11 +26,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * @CachePut is used to update data in the cache when there is any update in the source database.
+     * The @CachePut(value = "employees", key = "#result.id") annotation is used to update the cache
+     * with the returned value of the method. Here, the cache is named employees.
+     * The key used in the cache will be the ID of the Employee object.
+     * For example: employees::1
+     *
+     * key = "#result.id" - This is a SpEL (Spring Expression Language) expression.
+     * - #result refers to the value returned by the method.
+     * - #result.id accesses the id property of the returned object.
+     * - The key used in the cache will be the ID of the Employee object.
      */
     @Override
     @CachePut(value = "employees", key = "#result.id")
     public Employee saveEmployee(EmployeeDto employeeDto) {
         Employee user = new Employee(employeeDto.getFirstName(), employeeDto.getLastName(), employeeDto.getEmail());
+
         return employeeRepository.save(user);
     }
 
@@ -41,19 +51,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Cacheable(value = "employees", key = "#id")
     public Employee getEmployeeById(Integer id) {
-        Optional<Employee> employee = employeeRepository.findById(id);
-
-        return employee.orElse(null);
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundExc("employee with id: " + id + " not found!"));
     }
 
     @Override
     public List<Employee> getAllEmployees() {
 
-        List<Employee> employees = new ArrayList<>();
-
-        employeeRepository.findAll().forEach(employees::add); // Add all employees to the list
-
-        return employees;
+        return employeeRepository.findAll();
     }
 
     /**
@@ -63,11 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @CacheEvict(value = "employees", key = "#id")
     public void deleteEmployeeById(Integer id) {
         Employee user = getEmployeeById(id);
-        if (user != null) {
-            employeeRepository.delete(user);
-        } else {
-            throw new EmployeeNotFoundExc("employee with id: " + id + " not found!");
-        }
+        employeeRepository.delete(user);
     }
 
     /**
@@ -77,9 +78,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @CachePut(value = "employees", key = "#id")
     public Employee updateEmployee(Integer id, EmployeeDto employeeDto) {
         Employee employee = getEmployeeById(id);
-        if (employee == null) {
-            throw new EmployeeNotFoundExc("employee with id: " + id + " not found!");
-        }
 
         // update the data
         employee.setFirstName(employeeDto.getFirstName());

@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * For caching, your model class only needs to implement Serializable and doesn't require
  * any Redis-specific annotations like @RedisHash. This way, the caching mechanism (using @Cacheable, @CachePut, etc.)
- * can automatically handle the serialization of the User object when storing it in Redis.
+ * can automatically handle the serialization of the Employee object when storing it in Redis.
  */
 @Data
 @NoArgsConstructor

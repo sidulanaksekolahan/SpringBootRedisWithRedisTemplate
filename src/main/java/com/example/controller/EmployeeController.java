@@ -25,19 +25,15 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<Employee> createEmployee(@RequestBody EmployeeDto employeeDto) {
         Employee savedEmployee = employeeService.saveEmployee(employeeDto);
+
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Integer id) {
-
         Employee employee = employeeService.getEmployeeById(id);
 
-        if (employee != null) {
-            return new ResponseEntity<>(employee, HttpStatus.FOUND);
-        } else {
-            throw new EmployeeNotFoundExc("employee with id: " + id + " not found!");
-        }
+        return new ResponseEntity<>(employee, HttpStatus.FOUND);
     }
 
     @GetMapping
