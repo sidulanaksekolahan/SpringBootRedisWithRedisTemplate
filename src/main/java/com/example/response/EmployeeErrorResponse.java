@@ -1,6 +1,6 @@
 package com.example.response;
 
-public class UserErrorResponse {
+public class EmployeeErrorResponse {
 
     private long timeStamp;
 
@@ -8,7 +8,7 @@ public class UserErrorResponse {
 
     private String message;
 
-    public UserErrorResponse(long timeStamp, int status, String message) {
+    public EmployeeErrorResponse(long timeStamp, int status, String message) {
         this.timeStamp = timeStamp;
         this.status = status;
         this.message = message;
